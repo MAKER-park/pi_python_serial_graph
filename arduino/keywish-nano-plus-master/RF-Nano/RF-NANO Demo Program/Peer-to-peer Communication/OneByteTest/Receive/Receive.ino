@@ -24,5 +24,6 @@ void loop()
     Mirf.getData(&value);
     //Serial.print("Got MotorDrive data: ");
     Serial.println(value);
+    delay(100);
   }
 }

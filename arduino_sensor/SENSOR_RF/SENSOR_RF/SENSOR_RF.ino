@@ -1,5 +1,3 @@
-//Transmitter program
-
 #include <SPI.h>
 #include "nRF24L01.h"
 
@@ -21,12 +19,14 @@ void setup()
 void loop()
 {
   Mirf.setTADDR((byte *)"FGHIJ");           //Set the receiver address
-  value = random(255);                      //0-255 random number
-  Mirf.send(&value);                //Send instructions, send random number value
+  //value = random(255);                      //0-255 random number
+  //Mirf.send(&value);
+  Mirf.send(analogRead(A0));//Send instructions, send random number value
   Serial.print("Wait for sending.....");
   while (Mirf.isSending())//Until you send successfully, exit the loop
   delay(1);        
   Serial.print("Send success:");
-  Serial.println(value);
-  //delay(1000);
+  //Serial.println(value);
+  Serial.println(analogRead(A0));
+  delay(100);
 }
