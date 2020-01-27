@@ -15,7 +15,7 @@ void setup()
   Mirf.payload = sizeof(value);
   Mirf.channel = 90;             //Set the used channel
   Mirf.config();
-  Serial.println("Listening...");  //Start listening to received data
+  //Serial.println("Listening...");  //Start listening to received data
 }
 
 void loop()
