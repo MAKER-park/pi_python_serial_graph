@@ -18,10 +18,11 @@ void setup()
 
 void loop()
 {
-  value[0] = 20;
-  value[1] = 1;
-  value[2] = 2;
-  value[3] = random(255);                      //0-255 random number
+  value[0] = analogRead(A0);
+  value[1] = analogRead(A0);
+  value[2] = analogRead(A0);
+  //value[3] = random(255);                      //0-255 random number
+  value[3] = analogRead(A0);
   Mirf.send(value);                //Send instructions, send random number value
   Serial.println("Wait for sending.....");
   while (Mirf.isSending())//Until you send successfully, exit the loop

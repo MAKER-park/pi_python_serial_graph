@@ -22,10 +22,11 @@ void loop()
 {
   while (Mirf.dataReady()) { //When the program is received, the received data is output from the serial port
     Mirf.getData(value);
-    Serial.println("Got MotorDriver data: ");
+    //Serial.println("Got MotorDriver data: ");
     Serial.println(value[0]);
-    Serial.println(value[1]);
-    Serial.println(value[2]);
+    //Serial.println(value[1]);
+    //Serial.println(value[2]);
     Serial.println(value[3]);
+    
   }
 }
