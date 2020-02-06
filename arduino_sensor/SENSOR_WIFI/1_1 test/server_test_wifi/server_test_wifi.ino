@@ -24,10 +24,10 @@ const char* password = "123456789";
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-String readTemp() {
-  String abc = String(random(300));
+String ecg() {
+  String abc = String(analogRead(A0);
   return abc;
-  //return String(1.8 * bme.readTemperature() + 32);
+  //return String(analogRead(A0));
 }
 
 
@@ -46,7 +46,7 @@ void setup(){
   Serial.println(IP);
 
   server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", readTemp().c_str());
+    request->send_P(200, "text/plain", ecg().c_str());
   });
   
   // Start server
