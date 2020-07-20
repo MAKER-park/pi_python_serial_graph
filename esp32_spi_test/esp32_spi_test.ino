@@ -110,7 +110,7 @@ void setup() {
   vspi->transfer(buf[0]);//bcm2835_spi_transfern(buf, 3);
   vspi->transfer(buf[1]);
   vspi->transfer(buf[2]);
-  //vspi->transfer(3);
+  vspi->transfer(3);
   delayMicroseconds(CS_DELAY);
   cs_deselect();
   Serial.println("buf");
@@ -167,9 +167,9 @@ void setup() {
   cs_deselect();
   
   //look for DRDY and issue 24+n*24SCLKs
-  /*while ((digitalRead(DRDYPIN))==HIGH){ //wait for HIGH on DRDY
+  while ((digitalRead(DRDYPIN))==HIGH){ //wait for HIGH on DRDY
     digitalWrite(LEDPIN, HIGH); //*
-  }*/
+  }
   
   //cs_select();
   //bcm2835_spi_transfern(bigbuf, 27); //this would measure noise
@@ -204,7 +204,7 @@ void setup() {
   vspi->transfer(bigbuf[24]); //this would measure noise
   vspi->transfer(bigbuf[25]); //this would measure noise
   vspi->transfer(bigbuf[26]); //this would measure noise
-  //vspi->transfer(27); //this would measure noise
+  vspi->transfer(27); //this would measure noise
   delayMicroseconds(CS_DELAY);
   cs_deselect();
   
@@ -294,6 +294,7 @@ void loop() {
     vspi->transfer(bigbuf2[24]); //this would measure noise
     vspi->transfer(bigbuf2[25]); //this would measure noise
     vspi->transfer(bigbuf2[26]); //this would measure noise
+    vspi->transfer(27);
     delayMicroseconds(CS_DELAY);
     cs_deselect();  
     
@@ -357,7 +358,6 @@ void adc_wreg(int rgstr, int val){
   vspi->transfer(tempspibuf[0]);//bcm2835_spi_transfern(tempspibuf, 3);
   vspi->transfer(tempspibuf[1]);//bcm2835_spi_transfern(tempspibuf, 3);
   vspi->transfer(tempspibuf[2]);//bcm2835_spi_transfern(tempspibuf, 3);
-  
   vspi->transfer(3);
   delayMicroseconds(CS_DELAY);
   cs_deselect();
