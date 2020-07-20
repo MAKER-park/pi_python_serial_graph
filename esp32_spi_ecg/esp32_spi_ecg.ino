@@ -14,11 +14,12 @@
  start : pin 4
 */
 
-static const int spiClk = 1000000; // 1 MHz
+static const int spiClk = 2000000; // 1 MHz
 
 
 int gMaxChan = 0; //maximum number of channels supported by ads129n = 4,6,8
 int gIDval = 0; //Device ID : lower 5 bits of  ID Control Register 
+const int kPIN_LED = 25;
 
 
 //uninitalised pointers to SPI objects
@@ -29,18 +30,20 @@ void setup() {
   using namespace ADS1298;
   //initialise two instances of the SPIClass attached to VSPI and HSPI respectively
   vspi = new SPIClass(VSPI);
-  
-  //clock miso mosi ss
 
-  //initialise vspi with default pins
-  //SCLK = 18, MISO = 19, MOSI = 23, SS = 5
   vspi->begin();
+  vspi->setBitOrder(MSBFIRST);
+  vspi->setClockDivider(SPI_CLOCK_DIV4);
+  vspi->setDataMode(SPI_MODE1);
   //alternatively route through GPIO pins of your choice
 
   //set up slave select pins as outputs as the Arduino API
   //doesn't handle automatically pulling SS low
    pinMode(dataReadyPin, INPUT);
    pinMode(chipSelectPin, OUTPUT);
+   pinMode(IPIN_RESET, OUTPUT);//*optional
+   pinMode(IPIN_PWDN, OUTPUT);//*optional
+   pinMode(PIN_START, OUTPUT);
 
    delay(500); //wait for the ads129n to be ready - it can take a while to charge caps
    adc_send_command(SDATAC);
@@ -63,24 +66,41 @@ void setup() {
             gMaxChan = 0;
   }
 
+  while (Serial.read() >= 0) {} //http://forum.arduino.cc/index.php?topic=134847.0
+  //while (!WiredSerial) ; //required by Leonardo http://arduino.cc/en/Serial/IfSerial (ads129n requires 3.3v signals, Leonardo is 5v)
+  delay(200);  // Catch Due reset problem
+  Serial.println("pinmode output");
+  pinMode(kPIN_LED, OUTPUT); 
+
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
+  
   //use the SPI buses
   //vspiCommand(0x32);
   adc_send_command(0x32);
   delay(500);
   
-  if (digitalRead(dataReadyPin) == HIGH) {
+  if (digitalRead(dataReadyPin) == LOW) {
     Serial.print("Device Type (ID Control Register): ");
-    Serial.println(adc_rreg(3));
-    /*Serial.print(" Channels: ");
-    Serial.println(gMaxChan);*/
+    Serial.println(gIDval);
+    Serial.print(" Channels: ");
+    Serial.println(gMaxChan);
+  }
     // convert the temperature to celsius and display it:
+
+    /*Serial.print("Device Type (ID Control Register): "); Serial.print(gIDval); Serial.print(" Channels: "); Serial.println(gMaxChan);
+  digitalWrite(kPIN_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+  if (gMaxChan > 0)
+    delay(500); //long pause if OK
+  else
+    delay(50); //rapid blink if error
+  digitalWrite(kPIN_LED, LOW);    // turn the LED off by making the voltage LOW
+  delay(500); */
   }
 
-}
+
 
 void vspiCommand(int cmd) {
   //use it as you would the regular arduino SPI API
@@ -90,42 +110,4 @@ void vspiCommand(int cmd) {
   delayMicroseconds(1); 
   digitalWrite(chipSelectPin, HIGH); //pull ss high to signify end of data transfer
   vspi->endTransaction();
-}
-
-void adc_send_command(int cmd) //send command
-{
-  vspi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE0));
-  digitalWrite(chipSelectPin, LOW);
-  vspi->transfer(cmd);
-  delayMicroseconds(1);
-  digitalWrite(chipSelectPin, HIGH);
-  vspi->endTransaction();
-}
-
-void adc_wreg(int reg, int val) //write register
-{
-  //see pages 40,43 of datasheet - 
-  vspi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE0));
-  digitalWrite(chipSelectPin, LOW);
-  vspi->transfer(ADS1298::WREG | reg);
-  vspi->transfer(0);  // number of registers to be read/written – 1
-  vspi->transfer(val);
-  delayMicroseconds(1);
-  digitalWrite(chipSelectPin, HIGH);
-  vspi->endTransaction();
-}
-
-int adc_rreg(int reg){ //read register
-  int out = 0;
-  vspi->beginTransaction(SPISettings(spiClk, MSBFIRST, SPI_MODE0));
-  digitalWrite(chipSelectPin, LOW);
-  vspi->transfer(ADS1298::RREG | reg);
-  delayMicroseconds(5);
-  vspi->transfer(0);  // number of registers to be read/written – 1
-  delayMicroseconds(5);
-  out = vspi->transfer(0);
-    delayMicroseconds(1);
-  digitalWrite(chipSelectPin, HIGH);
-  vspi->endTransaction();
-  return(out);
 }

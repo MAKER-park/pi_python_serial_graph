@@ -5,8 +5,11 @@
 
 #include "Arduino.h"
 
-const int dataReadyPin = 17;
-const int chipSelectPin = 5;
+const int IPIN_PWDN = 2; //not required for TI demo kit
+const int IPIN_RESET  = 4;//*optional
+const int PIN_START = 16;
+const int dataReadyPin = 5;
+const int chipSelectPin = 17;
 
 
 //function prototypes

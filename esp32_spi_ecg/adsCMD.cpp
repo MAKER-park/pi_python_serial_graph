@@ -1,6 +1,6 @@
 
-/* adsCMD.cpp
- * simple library to light an LED for a duration given in milliseconds
+//adsCMD.cpp
+//* simple library to light an LED for a duration given in milliseconds
  
 #include "Arduino.h"   
 #include "adsCMD.h"
@@ -39,4 +39,4 @@ int adc_rreg(int reg){
     delayMicroseconds(1);
   digitalWrite(chipSelectPin, HIGH);
   return(out);
-}*/
+}
