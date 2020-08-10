@@ -9,8 +9,8 @@
   copies or substantial portions of the Software. 
 */ 
  
-#include <ESP8266WiFi.h> 
-#include <ESP8266HTTPClient.h> 
+#include <WiFi.h> 
+#include <HTTPClient.h> 
 #include <WiFiClient.h> 
  
 #include <ESP8266WiFiMulti.h> 
