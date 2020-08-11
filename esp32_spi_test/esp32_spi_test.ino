@@ -1,7 +1,10 @@
 #include <SPI.h>
 #include <time.h> //for timestamps
+#include <Ethernet.h>
 #include "ads1298.h"
 #include "adsCMDfast.h" //keeps pin assignment and basic IO operations
+
+EthernetUDP Udp;
 
 
   //char buf[3] = {0,0,0};
@@ -20,6 +23,7 @@
   
 void setup() {
   // put your setup code here, to run once:
+  Udp.begin(232);
   Serial.begin(1000000);
   vspi = new SPIClass(VSPI);
   
@@ -103,14 +107,15 @@ void setup() {
   cs_deselect();
   
   //cs_select();  
+  Udp.write(&buf,3);
   //vspi->transfer(&buf,3);//bcm2835_spi_transfern(buf, 3);
   //delayMicroseconds(CS_DELAY);
   //cs_deselect();
   cs_select();  
-  vspi->transfer(buf[0]);//bcm2835_spi_transfern(buf, 3);
-  vspi->transfer(buf[1]);
-  vspi->transfer(buf[2]);
-  vspi->transfer(3);
+  //vspi->transfer(buf[0]);//bcm2835_spi_transfern(buf, 3);
+  //vspi->transfer(buf[1]);
+  //vspi->transfer(buf[2]);
+  //vspi->transfer(3);
   delayMicroseconds(CS_DELAY);
   cs_deselect();
   Serial.println("buf");
@@ -165,7 +170,7 @@ void setup() {
   vspi->transfer(RDATAC); //0x10
   delayMicroseconds(CS_DELAY);
   cs_deselect();
-  
+  Serial.print("fuck");
   //look for DRDY and issue 24+n*24SCLKs
   while ((digitalRead(DRDYPIN))==HIGH){ //wait for HIGH on DRDY
     digitalWrite(LEDPIN, HIGH); //*
